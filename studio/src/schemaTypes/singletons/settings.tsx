@@ -69,7 +69,13 @@ export const settings = defineType({
                         if (parent?.linkType === 'href' && !value) {
                           return 'URL is required when Link Type is URL'
                         }
+                        // Allow http, https, and mailto URLs
+                        if (value && !value.match(/^(https?|mailto):/i)) {
+                          return 'URL must start with http://, https://, or mailto:'
+                        }
                         return true
+                      }).uri({
+                        scheme: ['http', 'https', 'mailto'],
                       }),
                   }),
                   defineField({

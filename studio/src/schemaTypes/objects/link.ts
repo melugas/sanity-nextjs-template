@@ -34,13 +34,18 @@ export const link = defineType({
       type: 'url',
       hidden: ({parent}) => parent?.linkType !== 'href',
       validation: (Rule) =>
-        // Custom validation to ensure URL is provided if the link type is 'href'
         Rule.custom((value, context) => {
           const parent = context.parent as Link
           if (parent?.linkType === 'href' && !value) {
             return 'URL is required when Link Type is URL'
           }
+          // Allow http, https, and mailto URLs
+          if (value && !value.match(/^(https?|mailto):/i)) {
+            return 'URL must start with http://, https://, or mailto:'
+          }
           return true
+        }).uri({
+          scheme: ['http', 'https', 'mailto'],
         }),
     }),
     defineField({
