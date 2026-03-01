@@ -30,3 +30,6 @@ next-env.d.ts
 
 # VS Code
 .vscode
+
+# Claude Code
+.claude
