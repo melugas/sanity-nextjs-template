@@ -1,6 +1,35 @@
 import {defineQuery} from 'next-sanity'
 
-export const settingsQuery = defineQuery(`*[_type == "settings"][0]`)
+export const settingsQuery = defineQuery(`*[_type == "settings"][0]{
+  _id,
+  title,
+  description,
+  ogImage,
+  headerNavigation[]{
+    _key,
+    label,
+    linkType,
+    "pageSlug": page->slug.current,
+    "postSlug": post->slug.current,
+    href,
+    openInNewTab
+  },
+  headerCta{
+    text,
+    linkType,
+    "pageSlug": page->slug.current,
+    "postSlug": post->slug.current,
+    href,
+    openInNewTab
+  },
+  footerHeading,
+  footerCopyright,
+  footerCopyrightLink{
+    linkType,
+    "pageSlug": page->slug.current,
+    href
+  }
+}`)
 
 const postFields = /* groq */ `
   _id,
