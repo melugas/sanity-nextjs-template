@@ -162,6 +162,259 @@ export const settings = defineType({
         }),
       ],
     }),
+
+    // Header Navigation Fields
+    defineField({
+      name: 'headerNavigation',
+      title: 'Header Navigation',
+      description: 'Navigation links displayed in the header',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'label',
+              title: 'Label',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'linkType',
+              title: 'Link Type',
+              type: 'string',
+              initialValue: 'page',
+              options: {
+                list: [
+                  {title: 'Page', value: 'page'},
+                  {title: 'Post', value: 'post'},
+                  {title: 'URL', value: 'href'},
+                ],
+                layout: 'radio',
+              },
+            }),
+            defineField({
+              name: 'page',
+              title: 'Page',
+              type: 'reference',
+              to: [{type: 'page'}],
+              hidden: ({parent}) => parent?.linkType !== 'page',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any
+                  if (parent?.linkType === 'page' && !value) {
+                    return 'Page reference is required when Link Type is Page'
+                  }
+                  return true
+                }),
+            }),
+            defineField({
+              name: 'post',
+              title: 'Post',
+              type: 'reference',
+              to: [{type: 'post'}],
+              hidden: ({parent}) => parent?.linkType !== 'post',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any
+                  if (parent?.linkType === 'post' && !value) {
+                    return 'Post reference is required when Link Type is Post'
+                  }
+                  return true
+                }),
+            }),
+            defineField({
+              name: 'href',
+              title: 'URL',
+              type: 'url',
+              hidden: ({parent}) => parent?.linkType !== 'href',
+              validation: (Rule) =>
+                Rule.custom((value, context) => {
+                  const parent = context.parent as any
+                  if (parent?.linkType === 'href' && !value) {
+                    return 'URL is required when Link Type is URL'
+                  }
+                  // Allow http, https, and mailto URLs
+                  if (value && !value.match(/^(https?|mailto):/i)) {
+                    return 'URL must start with http://, https://, or mailto:'
+                  }
+                  return true
+                }).uri({
+                  scheme: ['http', 'https', 'mailto'],
+                }),
+            }),
+            defineField({
+              name: 'openInNewTab',
+              title: 'Open in new tab',
+              type: 'boolean',
+              initialValue: false,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'label',
+              linkType: 'linkType',
+            },
+            prepare({title, linkType}) {
+              return {
+                title: title || 'Untitled Link',
+                subtitle: linkType ? `Link to: ${linkType}` : undefined,
+              }
+            },
+          },
+        },
+      ],
+    }),
+    // Header CTA Button
+    defineField({
+      name: 'headerCta',
+      title: 'Header CTA Button',
+      description: 'Call-to-action button displayed in the header',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'text',
+          title: 'Button Text',
+          type: 'string',
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: 'linkType',
+          title: 'Link Type',
+          type: 'string',
+          initialValue: 'href',
+          options: {
+            list: [
+              {title: 'URL', value: 'href'},
+              {title: 'Page', value: 'page'},
+              {title: 'Post', value: 'post'},
+            ],
+            layout: 'radio',
+          },
+        }),
+        defineField({
+          name: 'href',
+          title: 'URL',
+          type: 'url',
+          hidden: ({parent}) => parent?.linkType !== 'href',
+          validation: (Rule) =>
+            Rule.custom((value, context) => {
+              const parent = context.parent as any
+              if (parent?.linkType === 'href' && !value) {
+                return 'URL is required when Link Type is URL'
+              }
+              // Allow http, https, and mailto URLs
+              if (value && !value.match(/^(https?|mailto):/i)) {
+                return 'URL must start with http://, https://, or mailto:'
+              }
+              return true
+            }).uri({
+              scheme: ['http', 'https', 'mailto'],
+            }),
+        }),
+        defineField({
+          name: 'page',
+          title: 'Page',
+          type: 'reference',
+          to: [{type: 'page'}],
+          hidden: ({parent}) => parent?.linkType !== 'page',
+          validation: (Rule) =>
+            Rule.custom((value, context) => {
+              const parent = context.parent as any
+              if (parent?.linkType === 'page' && !value) {
+                return 'Page reference is required when Link Type is Page'
+              }
+              return true
+            }),
+        }),
+        defineField({
+          name: 'post',
+          title: 'Post',
+          type: 'reference',
+          to: [{type: 'post'}],
+          hidden: ({parent}) => parent?.linkType !== 'post',
+          validation: (Rule) =>
+            Rule.custom((value, context) => {
+              const parent = context.parent as any
+              if (parent?.linkType === 'post' && !value) {
+                return 'Post reference is required when Link Type is Post'
+              }
+              return true
+            }),
+        }),
+        defineField({
+          name: 'openInNewTab',
+          title: 'Open in new tab',
+          type: 'boolean',
+          initialValue: true,
+        }),
+      ],
+    }),
+    // Footer Fields
+    defineField({
+      name: 'footerHeading',
+      title: 'Footer Heading',
+      type: 'string',
+      description: 'Heading text displayed in the footer',
+    }),
+    defineField({
+      name: 'footerCopyright',
+      title: 'Footer Copyright Text',
+      type: 'string',
+      description: 'Copyright text displayed in the footer',
+    }),
+    defineField({
+      name: 'footerCopyrightLink',
+      title: 'Footer Copyright Link',
+      description: 'Optional link for the copyright text',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'linkType',
+          title: 'Link Type',
+          type: 'string',
+          initialValue: 'href',
+          options: {
+            list: [
+              {title: 'URL', value: 'href'},
+              {title: 'Page', value: 'page'},
+            ],
+            layout: 'radio',
+          },
+        }),
+        defineField({
+          name: 'href',
+          title: 'URL',
+          type: 'url',
+          hidden: ({parent}) => parent?.linkType !== 'href',
+          validation: (Rule) =>
+            Rule.custom((value, context) => {
+              const parent = context.parent as any
+              if (parent?.linkType === 'href' && !value) {
+                return 'URL is required when Link Type is URL'
+              }
+              return true
+            }).uri({
+              scheme: ['http', 'https'],
+            }),
+        }),
+        defineField({
+          name: 'page',
+          title: 'Page',
+          type: 'reference',
+          to: [{type: 'page'}],
+          hidden: ({parent}) => parent?.linkType !== 'page',
+          validation: (Rule) =>
+            Rule.custom((value, context) => {
+              const parent = context.parent as any
+              if (parent?.linkType === 'page' && !value) {
+                return 'Page reference is required when Link Type is Page'
+              }
+              return true
+            }),
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {
