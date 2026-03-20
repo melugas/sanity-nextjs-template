@@ -29,7 +29,7 @@ export default function Timeline({block}: TimelineProps) {
             return (
               <div key={entry._key || index} className="relative flex gap-6">
                 {/* Image and connecting line */}
-                <div className="relative flex-shrink-0">
+                <div className="relative shrink-0">
                   {entry.image?.asset?._ref ? (
                     <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 bg-white">
                       <Image
