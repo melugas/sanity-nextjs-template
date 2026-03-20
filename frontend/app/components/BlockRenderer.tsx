@@ -3,6 +3,8 @@ import React from 'react'
 import Cta from '@/app/components/Cta'
 import Info from '@/app/components/InfoSection'
 import Timeline from '@/app/components/Timeline'
+import Hero from '@/app/components/Hero'
+import RecentPostsBlock from '@/app/components/RecentPostsBlock'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
 
@@ -13,15 +15,15 @@ type BlockProps = {
   pageType: string
 }
 
-type BlocksType = {
-  [key: string]: React.FC<BlockProps>
-}
-
-const Blocks = {
+// Use Record with any since each component has its own specific block type
+// and we handle type checking at runtime via the _type field
+const Blocks: Record<string, React.ComponentType<any>> = {
   callToAction: Cta,
   infoSection: Info,
   timeline: Timeline,
-} as BlocksType
+  hero: Hero,
+  recentPosts: RecentPostsBlock,
+}
 
 /**
  * Used by the <PageBuilder>, this component renders a the component that matches the block type.
