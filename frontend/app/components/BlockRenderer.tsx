@@ -5,6 +5,7 @@ import Info from '@/app/components/InfoSection'
 import Timeline from '@/app/components/Timeline'
 import Hero from '@/app/components/Hero'
 import RecentPostsBlock from '@/app/components/RecentPostsBlock'
+import Gallery from '@/app/components/Gallery'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
 
@@ -23,6 +24,7 @@ const Blocks: Record<string, React.ComponentType<any>> = {
   timeline: Timeline,
   hero: Hero,
   recentPosts: RecentPostsBlock,
+  gallery: Gallery,
 }
 
 /**

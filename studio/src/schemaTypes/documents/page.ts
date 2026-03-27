@@ -47,6 +47,7 @@ export const page = defineType({
       of: [
         {type: 'hero'},
         {type: 'recentPosts'},
+        {type: 'gallery'},
         {type: 'callToAction'},
         {type: 'infoSection'},
         {type: 'timeline'},

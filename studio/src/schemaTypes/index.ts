@@ -6,6 +6,7 @@ import {infoSection} from './objects/infoSection'
 import {timeline} from './objects/timeline'
 import {hero} from './objects/hero'
 import {recentPosts} from './objects/recentPosts'
+import {gallery} from './objects/gallery'
 import {settings} from './singletons/settings'
 import {link} from './objects/link'
 import {blockContent} from './objects/blockContent'
@@ -30,5 +31,6 @@ export const schemaTypes = [
   timeline,
   hero,
   recentPosts,
+  gallery,
   link,
 ]
