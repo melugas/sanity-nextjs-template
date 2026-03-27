@@ -4,12 +4,13 @@ import {SanityDocument} from 'next-sanity'
 import {useOptimistic} from 'next-sanity/hooks'
 
 import BlockRenderer from '@/app/components/BlockRenderer'
-import {GetPageQueryResult} from '@/sanity.types'
+import {GetPageQueryResult, RecentPostsQueryResult} from '@/sanity.types'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
 
 type PageBuilderPageProps = {
   page: GetPageQueryResult
+  posts?: RecentPostsQueryResult | null
 }
 
 type PageData = {
@@ -25,9 +26,11 @@ type PageData = {
 function RenderSections({
   pageBuilderSections,
   page,
+  posts,
 }: {
   pageBuilderSections: PageBuilderSection[]
   page: GetPageQueryResult
+  posts?: RecentPostsQueryResult | null
 }) {
   if (!page) {
     return null
@@ -47,6 +50,7 @@ function RenderSections({
           block={block}
           pageId={page._id}
           pageType={page._type}
+          posts={posts}
         />
       ))}
     </div>
@@ -75,7 +79,7 @@ function RenderEmptyState({page}: {page: GetPageQueryResult}) {
   )
 }
 
-export default function PageBuilder({page}: PageBuilderPageProps) {
+export default function PageBuilder({page, posts}: PageBuilderPageProps) {
   const pageBuilderSections = useOptimistic<
     PageBuilderSection[] | undefined,
     SanityDocument<PageData>
@@ -101,7 +105,7 @@ export default function PageBuilder({page}: PageBuilderPageProps) {
   })
 
   return pageBuilderSections && pageBuilderSections.length > 0 ? (
-    <RenderSections pageBuilderSections={pageBuilderSections} page={page} />
+    <RenderSections pageBuilderSections={pageBuilderSections} page={page} posts={posts} />
   ) : (
     <RenderEmptyState page={page} />
   )

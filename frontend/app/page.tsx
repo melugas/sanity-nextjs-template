@@ -1,4 +1,4 @@
-import {getPageQuery} from '@/sanity/lib/queries'
+import {getPageQuery, recentPostsQuery} from '@/sanity/lib/queries'
 import {sanityFetch} from '@/sanity/lib/live'
 import PageBuilder from '@/app/components/PageBuilder'
 
@@ -27,5 +27,21 @@ export default async function Page() {
     )
   }
 
-  return <PageBuilder page={page} />
+  // Fetch posts if there are any recentPosts blocks on the page
+  let posts = null
+  if (page.pageBuilder?.some((block) => block._type === 'recentPosts')) {
+    // Find the maximum limit from all recentPosts blocks
+    const maxLimit =
+      page.pageBuilder
+        .filter((block) => block._type === 'recentPosts')
+        .reduce((max, block) => Math.max(max, (block as any).limit || 3), 3) || 3
+
+    const {data} = await sanityFetch({
+      query: recentPostsQuery,
+      params: {limit: maxLimit - 1},
+    })
+    posts = data
+  }
+
+  return <PageBuilder page={page} posts={posts} />
 }

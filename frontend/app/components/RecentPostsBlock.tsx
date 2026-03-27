@@ -1,7 +1,5 @@
 import Link from 'next/link'
 import {ExtractPageBuilderType} from '@/sanity/lib/types'
-import {sanityFetch} from '@/sanity/lib/live'
-import {recentPostsQuery} from '@/sanity/lib/queries'
 import {RecentPostsQueryResult} from '@/sanity.types'
 import DateComponent from '@/app/components/Date'
 import Avatar from '@/app/components/Avatar'
@@ -9,7 +7,7 @@ import {dataAttr} from '@/sanity/lib/utils'
 
 /**
  * RecentPostsBlock component for the PageBuilder system.
- * Fetches and displays a configurable number of recent blog posts.
+ * Displays a configurable number of recent blog posts.
  *
  * Features:
  * - Configurable section title
@@ -22,23 +20,20 @@ import {dataAttr} from '@/sanity/lib/utils'
  * @component
  * @example
  * // Used within PageBuilder - not called directly
- * <RecentPostsBlock block={recentPostsBlock} index={1} pageType="page" pageId="abc123" />
+ * // Data fetching happens at page level, posts passed as prop
+ * <RecentPostsBlock block={recentPostsBlock} posts={posts} index={1} pageType="page" pageId="abc123" />
  */
 
 type RecentPostsBlockProps = {
   block: ExtractPageBuilderType<'recentPosts'>
+  posts?: RecentPostsQueryResult
   index: number
   pageType: string
   pageId: string
 }
 
-export default async function RecentPostsBlock({block}: RecentPostsBlockProps) {
-  const {sectionTitle, limit = 3} = block
-
-  const {data: posts} = await sanityFetch({
-    query: recentPostsQuery,
-    params: {limit: limit - 1}, // GROQ uses 0-based indexing with [0...limit]
-  })
+export default function RecentPostsBlock({block, posts}: RecentPostsBlockProps) {
+  const {sectionTitle} = block
 
   if (!posts || posts.length === 0) {
     return null

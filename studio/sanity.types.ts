@@ -12,9 +12,32 @@
  * ---------------------------------------------------------------------------------
  */
 
-export declare const internalGroqTypeReferenceTo: unique symbol
-
 // Source: ../sanity.schema.json
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  alt?: string
+  _type: 'image'
+}
+
+export type ImagesObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "images.object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  alt: string
+  _type: 'image'
+}
+
 export type PageReference = {
   _ref: string
   _type: 'reference'
@@ -38,11 +61,63 @@ export type Link = {
   openInNewTab?: boolean
 }
 
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+export type Gallery = {
+  _type: 'gallery'
+  sectionTitle?: string
+  images: Array<{
+    image: ImagesObjectImage
+    caption?: string
+    _key: string
+  }>
+  layout: 'grid' | 'masonry' | 'carousel'
+  columns?: 2 | 3 | 4
+}
+
+export type RecentPosts = {
+  _type: 'recentPosts'
+  sectionTitle: string
+  limit: number
+}
+
+export type Hero = {
+  _type: 'hero'
+  eyebrow?: string
+  headline: string
+  subheadline?: string
+  headingLinks?: Array<{
+    text: string
+    url?: string
+    _key: string
+  }>
+  ctaButtons?: Array<{
+    label: string
+    link?: Link
+    style?: 'primary' | 'secondary'
+    _key: string
+  }>
+  backgroundImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  backgroundColor?: Color
+}
+
+export type Timeline = {
+  _type: 'timeline'
+  sectionTitle: string
+  entries?: Array<{
+    image?: ObjectImage
+    organization: string
+    role: string
+    startDate: string
+    endDate?: string
+    description?: string
+    _key: string
+  }>
 }
 
 export type CallToAction = {
@@ -165,6 +240,30 @@ export type Settings = {
     metadataBase?: string
     _type: 'image'
   }
+  headerNavigation?: Array<{
+    label: string
+    linkType?: 'page' | 'post' | 'href'
+    page?: PageReference
+    post?: PostReference
+    href?: string
+    openInNewTab?: boolean
+    _key: string
+  }>
+  headerCta?: {
+    text: string
+    linkType?: 'href' | 'page' | 'post'
+    href?: string
+    page?: PageReference
+    post?: PostReference
+    openInNewTab?: boolean
+  }
+  footerHeading?: string
+  footerCopyright?: string
+  footerCopyrightLink?: {
+    linkType?: 'href' | 'page'
+    href?: string
+    page?: PageReference
+  }
 }
 
 export type SanityImageCrop = {
@@ -196,10 +295,22 @@ export type Page = {
   pageBuilder?: Array<
     | ({
         _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & RecentPosts)
+    | ({
+        _key: string
+      } & Gallery)
+    | ({
+        _key: string
       } & CallToAction)
     | ({
         _key: string
       } & InfoSection)
+    | ({
+        _key: string
+      } & Timeline)
   >
 }
 
@@ -254,6 +365,15 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
+}
+
+export type Color = {
+  _type: 'color'
+  hex?: string
+  alpha?: number
+  hsl?: HslaColor
+  hsv?: HsvaColor
+  rgb?: RgbaColor
 }
 
 export type SanityAssistInstructionTask = {
@@ -393,6 +513,30 @@ export type SanityAssistSchemaTypeField = {
   >
 }
 
+export type RgbaColor = {
+  _type: 'rgbaColor'
+  r?: number
+  g?: number
+  b?: number
+  a?: number
+}
+
+export type HsvaColor = {
+  _type: 'hsvaColor'
+  h?: number
+  s?: number
+  v?: number
+  a?: number
+}
+
+export type HslaColor = {
+  _type: 'hslaColor'
+  h?: number
+  s?: number
+  l?: number
+  a?: number
+}
+
 export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch'
   background?: string
@@ -491,10 +635,16 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
+  | ObjectImage
+  | ImagesObjectImage
   | PageReference
   | PostReference
   | Link
-  | SanityImageAssetReference
+  | Gallery
+  | RecentPosts
+  | Hero
+  | Timeline
   | CallToAction
   | InfoSection
   | BlockContentTextOnly
@@ -508,6 +658,7 @@ export type AllSanitySchemaTypes =
   | Post
   | Person
   | Slug
+  | Color
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -521,6 +672,9 @@ export type AllSanitySchemaTypes =
   | SanityAssistInstructionFieldRef
   | SanityAssistInstruction
   | SanityAssistSchemaTypeField
+  | RgbaColor
+  | HsvaColor
+  | HslaColor
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -529,3 +683,5 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint
+
+export declare const internalGroqTypeReferenceTo: unique symbol

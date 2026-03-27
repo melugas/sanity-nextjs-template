@@ -8,12 +8,14 @@ import RecentPostsBlock from '@/app/components/RecentPostsBlock'
 import Gallery from '@/app/components/Gallery'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
+import {RecentPostsQueryResult} from '@/sanity.types'
 
 type BlockProps = {
   index: number
   block: PageBuilderSection
   pageId: string
   pageType: string
+  posts?: RecentPostsQueryResult | null
 }
 
 // Use Record with any since each component has its own specific block type
@@ -30,9 +32,23 @@ const Blocks: Record<string, React.ComponentType<any>> = {
 /**
  * Used by the <PageBuilder>, this component renders a the component that matches the block type.
  */
-export default function BlockRenderer({block, index, pageId, pageType}: BlockProps) {
+export default function BlockRenderer({block, index, pageId, pageType, posts}: BlockProps) {
   // Block does exist
   if (typeof Blocks[block._type] !== 'undefined') {
+    // Build props for the component
+    const componentProps: any = {
+      key: block._key,
+      block: block,
+      index: index,
+      pageId: pageId,
+      pageType: pageType,
+    }
+
+    // Add posts prop for recentPosts blocks
+    if (block._type === 'recentPosts') {
+      componentProps.posts = posts
+    }
+
     return (
       <div
         key={block._key}
@@ -42,13 +58,7 @@ export default function BlockRenderer({block, index, pageId, pageType}: BlockPro
           path: `pageBuilder[_key=="${block._key}"]`,
         }).toString()}
       >
-        {React.createElement(Blocks[block._type], {
-          key: block._key,
-          block: block,
-          index: index,
-          pageId: pageId,
-          pageType: pageType,
-        })}
+        {React.createElement(Blocks[block._type], componentProps)}
       </div>
     )
   }

@@ -12,8 +12,6 @@
  * ---------------------------------------------------------------------------------
  */
 
-export declare const internalGroqTypeReferenceTo: unique symbol
-
 // Source: ../sanity.schema.json
 export type SanityImageAssetReference = {
   _ref: string
@@ -28,6 +26,15 @@ export type ObjectImage = {
   hotspot?: SanityImageHotspot
   crop?: SanityImageCrop
   alt?: string
+  _type: 'image'
+}
+
+export type ImagesObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "images.object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  alt: string
   _type: 'image'
 }
 
@@ -54,6 +61,18 @@ export type Link = {
   openInNewTab?: boolean
 }
 
+export type Gallery = {
+  _type: 'gallery'
+  sectionTitle?: string
+  images: Array<{
+    image: ImagesObjectImage
+    caption?: string
+    _key: string
+  }>
+  layout: 'grid' | 'masonry' | 'carousel'
+  columns?: 2 | 3 | 4
+}
+
 export type RecentPosts = {
   _type: 'recentPosts'
   sectionTitle: string
@@ -62,11 +81,18 @@ export type RecentPosts = {
 
 export type Hero = {
   _type: 'hero'
-  tagline?: string
-  heading: string
+  eyebrow?: string
+  headline: string
+  subheadline?: string
   headingLinks?: Array<{
     text: string
     url?: string
+    _key: string
+  }>
+  ctaButtons?: Array<{
+    label: string
+    link?: Link
+    style?: 'primary' | 'secondary'
     _key: string
   }>
   backgroundImage?: {
@@ -77,6 +103,7 @@ export type Hero = {
     alt?: string
     _type: 'image'
   }
+  backgroundColor?: Color
 }
 
 export type Timeline = {
@@ -274,6 +301,9 @@ export type Page = {
       } & RecentPosts)
     | ({
         _key: string
+      } & Gallery)
+    | ({
+        _key: string
       } & CallToAction)
     | ({
         _key: string
@@ -335,6 +365,15 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
+}
+
+export type Color = {
+  _type: 'color'
+  hex?: string
+  alpha?: number
+  hsl?: HslaColor
+  hsv?: HsvaColor
+  rgb?: RgbaColor
 }
 
 export type SanityAssistInstructionTask = {
@@ -474,6 +513,30 @@ export type SanityAssistSchemaTypeField = {
   >
 }
 
+export type RgbaColor = {
+  _type: 'rgbaColor'
+  r?: number
+  g?: number
+  b?: number
+  a?: number
+}
+
+export type HsvaColor = {
+  _type: 'hsvaColor'
+  h?: number
+  s?: number
+  v?: number
+  a?: number
+}
+
+export type HslaColor = {
+  _type: 'hslaColor'
+  h?: number
+  s?: number
+  l?: number
+  a?: number
+}
+
 export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch'
   background?: string
@@ -574,9 +637,11 @@ export type Geopoint = {
 export type AllSanitySchemaTypes =
   | SanityImageAssetReference
   | ObjectImage
+  | ImagesObjectImage
   | PageReference
   | PostReference
   | Link
+  | Gallery
   | RecentPosts
   | Hero
   | Timeline
@@ -593,6 +658,7 @@ export type AllSanitySchemaTypes =
   | Post
   | Person
   | Slug
+  | Color
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -606,6 +672,9 @@ export type AllSanitySchemaTypes =
   | SanityAssistInstructionFieldRef
   | SanityAssistInstruction
   | SanityAssistSchemaTypeField
+  | RgbaColor
+  | HsvaColor
+  | HslaColor
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions
@@ -614,6 +683,8 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint
+
+export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -719,12 +790,31 @@ export type GetPageQueryResult = {
       }
     | {
         _key: string
+        _type: 'gallery'
+        sectionTitle?: string
+        images: Array<{
+          image: ImagesObjectImage
+          caption?: string
+          _key: string
+        }>
+        layout: 'carousel' | 'grid' | 'masonry'
+        columns?: 2 | 3 | 4
+      }
+    | {
+        _key: string
         _type: 'hero'
-        tagline?: string
-        heading: string
+        eyebrow?: string
+        headline: string
+        subheadline?: string
         headingLinks?: Array<{
           text: string
           url?: string
+          _key: string
+        }>
+        ctaButtons?: Array<{
+          label: string
+          link?: Link
+          style?: 'primary' | 'secondary'
           _key: string
         }>
         backgroundImage?: {
@@ -735,6 +825,7 @@ export type GetPageQueryResult = {
           alt?: string
           _type: 'image'
         }
+        backgroundColor?: Color
       }
     | {
         _key: string
