@@ -12,24 +12,31 @@ export const hero = defineType({
   icon: RocketIcon,
   fields: [
     defineField({
-      name: 'tagline',
-      title: 'Tagline',
+      name: 'eyebrow',
+      title: 'Eyebrow',
       type: 'string',
-      description: 'Small text above the main heading',
+      description: 'Short label text above headline',
     }),
     defineField({
-      name: 'heading',
-      title: 'Main Heading',
+      name: 'headline',
+      title: 'Headline',
       type: 'text',
       rows: 2,
-      description: 'Large hero heading',
+      description: 'Primary headline - large hero heading',
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'subheadline',
+      title: 'Subheadline',
+      type: 'text',
+      rows: 2,
+      description: 'Supporting tagline or description below the headline',
     }),
     defineField({
       name: 'headingLinks',
       title: 'Heading Links',
       type: 'array',
-      description: 'Optional links to highlight words in the heading',
+      description: 'Optional links to highlight words in the headline',
       of: [
         {
           type: 'object',
@@ -61,6 +68,56 @@ export const hero = defineType({
       ],
     }),
     defineField({
+      name: 'ctaButtons',
+      title: 'CTA Buttons',
+      type: 'array',
+      description: 'Call-to-action buttons for the hero section',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'label',
+              title: 'Button Label',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'link',
+              title: 'Button Link',
+              type: 'link',
+            }),
+            defineField({
+              name: 'style',
+              title: 'Button Style',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Primary', value: 'primary'},
+                  {title: 'Secondary', value: 'secondary'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'primary',
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'label',
+              style: 'style',
+            },
+            prepare({title, style}) {
+              return {
+                title: title || 'Untitled Button',
+                subtitle: style === 'primary' ? 'Primary Button' : 'Secondary Button',
+              }
+            },
+          },
+        },
+      ],
+      validation: (Rule) => Rule.max(2),
+    }),
+    defineField({
       name: 'backgroundImage',
       title: 'Background Image',
       type: 'image',
@@ -77,10 +134,16 @@ export const hero = defineType({
         },
       ],
     }),
+    defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      description: 'Optional fallback background color if no image is set',
+    }),
   ],
   preview: {
     select: {
-      title: 'heading',
+      title: 'headline',
       media: 'backgroundImage',
     },
     prepare({title}) {

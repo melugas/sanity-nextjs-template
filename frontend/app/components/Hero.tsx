@@ -1,9 +1,17 @@
 import Link from 'next/link'
 import {ExtractPageBuilderType} from '@/sanity/lib/types'
+import ResolvedLink from '@/app/components/ResolvedLink'
 
 /**
  * Hero component for the PageBuilder system.
- * Renders a hero section with an optional tagline, heading with inline links, and background image.
+ * Renders a hero section with eyebrow, headline, subheadline, CTA buttons, and background.
+ *
+ * Features:
+ * - Optional eyebrow text above headline
+ * - Headline with optional inline links
+ * - Subheadline for supporting text
+ * - Up to 2 CTA buttons (primary/secondary styles)
+ * - Background image or color
  *
  * @component
  * @example
@@ -25,16 +33,24 @@ type HeadingLink = {
 }
 
 export default function Hero({block}: HeroProps) {
-  const {tagline, heading, headingLinks = [], backgroundImage} = block
+  const {
+    eyebrow,
+    headline,
+    subheadline,
+    headingLinks = [],
+    ctaButtons = [],
+    backgroundImage,
+    backgroundColor,
+  } = block
 
-  // Create a function to render the heading with links
-  const renderHeading = () => {
+  // Create a function to render the headline with links
+  const renderHeadline = () => {
     if (!headingLinks || headingLinks.length === 0) {
-      return <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-black">{heading}</h1>
+      return <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-black">{headline}</h1>
     }
 
-    // Split the heading by the link texts and interleave links
-    let parts: (string | JSX.Element)[] = [heading]
+    // Split the headline by the link texts and interleave links
+    let parts: (string | JSX.Element)[] = [headline]
 
     headingLinks.forEach((link: HeadingLink, index: number) => {
       const newParts: (string | JSX.Element)[] = []
@@ -76,11 +92,15 @@ export default function Hero({block}: HeroProps) {
   }
 
   // Determine background style
-  const backgroundStyle = backgroundImage?.asset?.url
-    ? {backgroundImage: `url(${backgroundImage.asset.url})`}
-    : undefined
+  const backgroundStyle: React.CSSProperties = {}
 
-  const backgroundClass = backgroundImage?.asset?.url
+  if (backgroundImage?.asset?.url) {
+    backgroundStyle.backgroundImage = `url(${backgroundImage.asset.url})`
+  } else if (backgroundColor?.hex) {
+    backgroundStyle.backgroundColor = backgroundColor.hex
+  }
+
+  const backgroundClass = backgroundImage?.asset?.url || backgroundColor?.hex
     ? ''
     : 'bg-[url(/images/tile-1-black.png)] bg-size-[5px]'
 
@@ -90,13 +110,35 @@ export default function Hero({block}: HeroProps) {
         <div className="bg-gradient-to-b from-white w-full h-full absolute top-0"></div>
         <div className="container">
           <div className="relative min-h-[40vh] mx-auto max-w-2xl pt-10 xl:pt-20 pb-30 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center justify-center">
-            <div className="flex flex-col gap-4 items-center">
-              {tagline && (
+            <div className="flex flex-col gap-4 items-center text-center">
+              {eyebrow && (
                 <div className="text-md leading-6 prose uppercase py-1 px-3 bg-white font-mono italic">
-                  {tagline}
+                  {eyebrow}
                 </div>
               )}
-              {renderHeading()}
+              {renderHeadline()}
+              {subheadline && (
+                <p className="text-xl md:text-2xl text-gray-700 max-w-3xl">
+                  {subheadline}
+                </p>
+              )}
+              {ctaButtons && ctaButtons.length > 0 && (
+                <div className="flex flex-wrap gap-4 mt-6 justify-center">
+                  {ctaButtons.map((button: any) => (
+                    <ResolvedLink
+                      key={button._key}
+                      link={button.link}
+                      className={`rounded-full flex gap-2 font-mono text-sm whitespace-nowrap items-center py-3 px-6 transition-colors duration-200 ${
+                        button.style === 'primary'
+                          ? 'bg-black hover:bg-blue text-white'
+                          : 'bg-white hover:bg-gray-100 text-black border-2 border-black'
+                      }`}
+                    >
+                      {button.label}
+                    </ResolvedLink>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
