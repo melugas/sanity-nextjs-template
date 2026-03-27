@@ -1,14 +1,19 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 
 import Cta from '@/app/components/Cta'
 import Info from '@/app/components/InfoSection'
 import Timeline from '@/app/components/Timeline'
 import Hero from '@/app/components/Hero'
-import RecentPostsBlock from '@/app/components/RecentPostsBlock'
 import Gallery from '@/app/components/Gallery'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
 import {RecentPostsQueryResult} from '@/sanity.types'
+
+// Dynamically import RecentPostsBlock to avoid server-only imports in client bundle
+const RecentPostsBlock = dynamic(() => import('@/app/components/RecentPostsBlock'), {
+  ssr: true,
+})
 
 type BlockProps = {
   index: number
