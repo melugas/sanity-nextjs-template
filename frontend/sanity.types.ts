@@ -12,9 +12,23 @@
  * ---------------------------------------------------------------------------------
  */
 
-export declare const internalGroqTypeReferenceTo: unique symbol
-
 // Source: ../sanity.schema.json
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  alt?: string
+  _type: 'image'
+}
+
 export type PageReference = {
   _ref: string
   _type: 'reference'
@@ -38,11 +52,43 @@ export type Link = {
   openInNewTab?: boolean
 }
 
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+export type RecentPosts = {
+  _type: 'recentPosts'
+  sectionTitle: string
+  limit: number
+}
+
+export type Hero = {
+  _type: 'hero'
+  tagline?: string
+  heading: string
+  headingLinks?: Array<{
+    text: string
+    url?: string
+    _key: string
+  }>
+  backgroundImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+}
+
+export type Timeline = {
+  _type: 'timeline'
+  sectionTitle: string
+  entries?: Array<{
+    image?: ObjectImage
+    organization: string
+    role: string
+    startDate: string
+    endDate?: string
+    description?: string
+    _key: string
+  }>
 }
 
 export type CallToAction = {
@@ -165,6 +211,30 @@ export type Settings = {
     metadataBase?: string
     _type: 'image'
   }
+  headerNavigation?: Array<{
+    label: string
+    linkType?: 'page' | 'post' | 'href'
+    page?: PageReference
+    post?: PostReference
+    href?: string
+    openInNewTab?: boolean
+    _key: string
+  }>
+  headerCta?: {
+    text: string
+    linkType?: 'href' | 'page' | 'post'
+    href?: string
+    page?: PageReference
+    post?: PostReference
+    openInNewTab?: boolean
+  }
+  footerHeading?: string
+  footerCopyright?: string
+  footerCopyrightLink?: {
+    linkType?: 'href' | 'page'
+    href?: string
+    page?: PageReference
+  }
 }
 
 export type SanityImageCrop = {
@@ -196,10 +266,19 @@ export type Page = {
   pageBuilder?: Array<
     | ({
         _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & RecentPosts)
+    | ({
+        _key: string
       } & CallToAction)
     | ({
         _key: string
       } & InfoSection)
+    | ({
+        _key: string
+      } & Timeline)
   >
 }
 
@@ -491,10 +570,14 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | SanityImageAssetReference
+  | ObjectImage
   | PageReference
   | PostReference
   | Link
-  | SanityImageAssetReference
+  | RecentPosts
+  | Hero
+  | Timeline
   | CallToAction
   | InfoSection
   | BlockContentTextOnly
@@ -529,6 +612,8 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint
+
+export declare const internalGroqTypeReferenceTo: unique symbol
 
 // Source: sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -567,11 +652,30 @@ export type SettingsQueryResult = {
     metadataBase?: string
     _type: 'image'
   } | null
-  headerNavigation: null
-  headerCta: null
-  footerHeading: null
-  footerCopyright: null
-  footerCopyrightLink: null
+  headerNavigation: Array<{
+    _key: string
+    label: string
+    linkType: 'href' | 'page' | 'post' | null
+    pageSlug: string | null
+    postSlug: string | null
+    href: string | null
+    openInNewTab: boolean | null
+  }> | null
+  headerCta: {
+    text: string
+    linkType: 'href' | 'page' | 'post' | null
+    pageSlug: string | null
+    postSlug: string | null
+    href: string | null
+    openInNewTab: boolean | null
+  } | null
+  footerHeading: string | null
+  footerCopyright: string | null
+  footerCopyrightLink: {
+    linkType: 'href' | 'page' | null
+    pageSlug: string | null
+    href: string | null
+  } | null
 } | null
 
 // Source: sanity/lib/queries.ts
@@ -615,6 +719,25 @@ export type GetPageQueryResult = {
       }
     | {
         _key: string
+        _type: 'hero'
+        tagline?: string
+        heading: string
+        headingLinks?: Array<{
+          text: string
+          url?: string
+          _key: string
+        }>
+        backgroundImage?: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          alt?: string
+          _type: 'image'
+        }
+      }
+    | {
+        _key: string
         _type: 'infoSection'
         heading?: string
         subheading?: string
@@ -651,6 +774,26 @@ export type GetPageQueryResult = {
               markDefs: null
             }
         > | null
+      }
+    | {
+        _key: string
+        _type: 'recentPosts'
+        sectionTitle: string
+        limit: number
+      }
+    | {
+        _key: string
+        _type: 'timeline'
+        sectionTitle: string
+        entries?: Array<{
+          image?: ObjectImage
+          organization: string
+          role: string
+          startDate: string
+          endDate?: string
+          description?: string
+          _key: string
+        }>
       }
   > | null
 } | null
