@@ -105,6 +105,12 @@ export const gallery = defineType({
           return true
         }),
     }),
+    defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      description: 'Optional section background color. Use the alpha slider to control fill percentage.',
+    }),
   ],
   preview: {
     select: {

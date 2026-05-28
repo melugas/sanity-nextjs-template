@@ -1,3 +1,4 @@
+import React from 'react'
 import Image from '@/app/components/SanityImage'
 import {ExtractPageBuilderType} from '@/sanity/lib/types'
 
@@ -10,12 +11,20 @@ type TimelineProps = {
 
 export default function Timeline({block}: TimelineProps) {
   const {sectionTitle, entries = []} = block
+  const backgroundColor = block.backgroundColor
+
+  const backgroundStyle: React.CSSProperties = {}
+  if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
+  }
 
   if (!entries || entries.length === 0) {
     return null
   }
 
   return (
+    <div style={backgroundStyle}>
     <section className="container my-12">
       <div className="max-w-4xl mx-auto">
         {sectionTitle && (
@@ -83,5 +92,6 @@ export default function Timeline({block}: TimelineProps) {
         </div>
       </div>
     </section>
+    </div>
   )
 }

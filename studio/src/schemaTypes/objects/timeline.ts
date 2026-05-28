@@ -19,6 +19,12 @@ export const timeline = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      description: 'Optional section background color. Use the alpha slider to control fill percentage.',
+    }),
+    defineField({
       name: 'entries',
       title: 'Timeline Entries',
       type: 'array',

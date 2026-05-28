@@ -1,3 +1,4 @@
+import React from 'react'
 import Image from '@/app/components/SanityImage'
 import {ExtractPageBuilderType} from '@/sanity/lib/types'
 
@@ -20,6 +21,13 @@ type GalleryProps = {
 
 export default function Gallery({block}: GalleryProps) {
   const {sectionTitle, images = [], layout = 'grid', columns = 3} = block
+  const backgroundColor = block.backgroundColor
+
+  const backgroundStyle: React.CSSProperties = {}
+  if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
+  }
 
   if (!images || images.length === 0) {
     return null
@@ -34,85 +42,15 @@ export default function Gallery({block}: GalleryProps) {
     }[columns] || 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
 
     return (
-      <section className="container my-12">
-        <div className="max-w-6xl mx-auto">
-          {sectionTitle && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
-          )}
-          <div className={`grid ${gridCols} gap-6`}>
-            {images.map((item: any) => (
-              <div key={item._key} className="group">
-                {item.image?.asset?._ref && (
-                  <div className="relative aspect-square overflow-hidden rounded-sm">
-                    <Image
-                      id={item.image.asset._ref}
-                      alt={item.image.alt || item.caption || 'Gallery image'}
-                      width={600}
-                      height={600}
-                      crop={item.image.crop}
-                      mode="cover"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                {item.caption && (
-                  <p className="mt-2 text-sm text-gray-600">{item.caption}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  // Masonry layout
-  if (layout === 'masonry') {
-    return (
-      <section className="container my-12">
-        <div className="max-w-6xl mx-auto">
-          {sectionTitle && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
-          )}
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
-            {images.map((item: any) => (
-              <div key={item._key} className="group break-inside-avoid mb-6">
-                {item.image?.asset?._ref && (
-                  <div className="relative overflow-hidden rounded-sm">
-                    <Image
-                      id={item.image.asset._ref}
-                      alt={item.image.alt || item.caption || 'Gallery image'}
-                      width={600}
-                      height={600}
-                      crop={item.image.crop}
-                      mode="cover"
-                      className="w-full transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                {item.caption && (
-                  <p className="mt-2 text-sm text-gray-600">{item.caption}</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  // Carousel layout - simple horizontal scroll
-  if (layout === 'carousel') {
-    return (
-      <section className="container my-12">
-        <div className="max-w-6xl mx-auto">
-          {sectionTitle && (
-            <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
-          )}
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-            <div className="flex gap-6 pb-4">
+      <div style={backgroundStyle}>
+        <section className="container my-12">
+          <div className="max-w-6xl mx-auto">
+            {sectionTitle && (
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
+            )}
+            <div className={`grid ${gridCols} gap-6`}>
               {images.map((item: any) => (
-                <div key={item._key} className="group flex-shrink-0 w-80">
+                <div key={item._key} className="group">
                   {item.image?.asset?._ref && (
                     <div className="relative aspect-square overflow-hidden rounded-sm">
                       <Image
@@ -133,8 +71,84 @@ export default function Gallery({block}: GalleryProps) {
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
+    )
+  }
+
+  // Masonry layout
+  if (layout === 'masonry') {
+    return (
+      <div style={backgroundStyle}>
+        <section className="container my-12">
+          <div className="max-w-6xl mx-auto">
+            {sectionTitle && (
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
+            )}
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+              {images.map((item: any) => (
+                <div key={item._key} className="group break-inside-avoid mb-6">
+                  {item.image?.asset?._ref && (
+                    <div className="relative overflow-hidden rounded-sm">
+                      <Image
+                        id={item.image.asset._ref}
+                        alt={item.image.alt || item.caption || 'Gallery image'}
+                        width={600}
+                        height={600}
+                        crop={item.image.crop}
+                        mode="cover"
+                        className="w-full transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  {item.caption && (
+                    <p className="mt-2 text-sm text-gray-600">{item.caption}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  // Carousel layout - simple horizontal scroll
+  if (layout === 'carousel') {
+    return (
+      <div style={backgroundStyle}>
+        <section className="container my-12">
+          <div className="max-w-6xl mx-auto">
+            {sectionTitle && (
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">{sectionTitle}</h2>
+            )}
+            <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
+              <div className="flex gap-6 pb-4">
+                {images.map((item: any) => (
+                  <div key={item._key} className="group flex-shrink-0 w-80">
+                    {item.image?.asset?._ref && (
+                      <div className="relative aspect-square overflow-hidden rounded-sm">
+                        <Image
+                          id={item.image.asset._ref}
+                          alt={item.image.alt || item.caption || 'Gallery image'}
+                          width={600}
+                          height={600}
+                          crop={item.image.crop}
+                          mode="cover"
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+                    {item.caption && (
+                      <p className="mt-2 text-sm text-gray-600">{item.caption}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     )
   }
 

@@ -99,6 +99,13 @@ export const callToAction = defineType({
       hidden: ({parent}) => !Boolean(parent?.image?.asset),
       group: 'designSystem',
     }),
+    defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      description: 'Optional section background color. Use the alpha slider to control fill percentage. Overrides the light/dark theme.',
+      group: 'designSystem',
+    }),
   ],
   preview: {
     select: {

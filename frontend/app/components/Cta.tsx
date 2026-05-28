@@ -1,3 +1,4 @@
+import React from 'react'
 import {PortableTextBlock} from 'next-sanity'
 
 import ResolvedLink from '@/app/components/ResolvedLink'
@@ -16,12 +17,22 @@ type CtaProps = {
 
 export default function CTA({block}: CtaProps) {
   const {heading, eyebrow, body = [], button, image, theme, contentAlignment} = block
+  const backgroundColor = block.backgroundColor
 
   const isDark = theme === 'dark'
   const isImageFirst = stegaClean(contentAlignment) === 'imageFirst'
 
+  const backgroundStyle: React.CSSProperties = {}
+  if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
+  }
+
   return (
-    <section className={isDark ? 'relative dark dark:bg-black' : 'relative dark:bg-black'}>
+    <section
+      className={isDark && !backgroundColor?.rgb ? 'relative dark dark:bg-black' : 'relative'}
+      style={backgroundStyle}
+    >
       <div className="absolute inset-0 bg-size-[5px] bg-[url(/images/tile-1-black.png)] dark:bg-[url(/images/tile-1-white.png)] opacity-25" />
       <div className="container relative">
         <div className="grid lg:grid-cols-2 gap-12 py-12">

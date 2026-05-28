@@ -71,12 +71,14 @@ export type Gallery = {
   }>
   layout: 'grid' | 'masonry' | 'carousel'
   columns?: 2 | 3 | 4
+  backgroundColor?: Color
 }
 
 export type RecentPosts = {
   _type: 'recentPosts'
   sectionTitle: string
   limit: number
+  backgroundColor?: Color
 }
 
 export type Hero = {
@@ -109,6 +111,7 @@ export type Hero = {
 export type Timeline = {
   _type: 'timeline'
   sectionTitle: string
+  backgroundColor?: Color
   entries?: Array<{
     image?: ObjectImage
     organization: string
@@ -135,6 +138,7 @@ export type CallToAction = {
   }
   theme?: 'light' | 'dark'
   contentAlignment?: 'textFirst' | 'imageFirst'
+  backgroundColor?: Color
 }
 
 export type InfoSection = {
@@ -142,6 +146,7 @@ export type InfoSection = {
   heading?: string
   subheading?: string
   content?: BlockContent
+  backgroundColor?: Color
 }
 
 export type BlockContentTextOnly = Array<{
@@ -314,6 +319,15 @@ export type Page = {
   >
 }
 
+export type Color = {
+  _type: 'color'
+  hex?: string
+  alpha?: number
+  hsl?: HslaColor
+  hsv?: HsvaColor
+  rgb?: RgbaColor
+}
+
 export type PersonReference = {
   _ref: string
   _type: 'reference'
@@ -365,15 +379,6 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
-}
-
-export type Color = {
-  _type: 'color'
-  hex?: string
-  alpha?: number
-  hsl?: HslaColor
-  hsv?: HsvaColor
-  rgb?: RgbaColor
 }
 
 export type SanityAssistInstructionTask = {
@@ -654,11 +659,11 @@ export type AllSanitySchemaTypes =
   | SanityImageCrop
   | SanityImageHotspot
   | Page
+  | Color
   | PersonReference
   | Post
   | Person
   | Slug
-  | Color
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -787,6 +792,7 @@ export type GetPageQueryResult = {
         }
         theme?: 'dark' | 'light'
         contentAlignment?: 'imageFirst' | 'textFirst'
+        backgroundColor?: Color
       }
     | {
         _key: string
@@ -799,6 +805,7 @@ export type GetPageQueryResult = {
         }>
         layout: 'carousel' | 'grid' | 'masonry'
         columns?: 2 | 3 | 4
+        backgroundColor?: Color
       }
     | {
         _key: string
@@ -865,17 +872,20 @@ export type GetPageQueryResult = {
               markDefs: null
             }
         > | null
+        backgroundColor?: Color
       }
     | {
         _key: string
         _type: 'recentPosts'
         sectionTitle: string
         limit: number
+        backgroundColor?: Color
       }
     | {
         _key: string
         _type: 'timeline'
         sectionTitle: string
+        backgroundColor?: Color
         entries?: Array<{
           image?: ObjectImage
           organization: string

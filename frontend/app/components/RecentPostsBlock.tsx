@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import {ExtractPageBuilderType} from '@/sanity/lib/types'
 import {RecentPostsQueryResult} from '@/sanity.types'
@@ -34,13 +35,20 @@ type RecentPostsBlockProps = {
 
 export default function RecentPostsBlock({block, posts}: RecentPostsBlockProps) {
   const {sectionTitle} = block
+  const backgroundColor = block.backgroundColor
+
+  const backgroundStyle: React.CSSProperties = {}
+  if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
+  }
 
   if (!posts || posts.length === 0) {
     return null
   }
 
   return (
-    <div className="border-t border-gray-100 bg-gray-50">
+    <div className={`${backgroundColor?.rgb ? '' : 'bg-gray-50'}`} style={backgroundStyle}>
       <div className="container">
         <aside className="py-12 sm:py-20">
           <div>

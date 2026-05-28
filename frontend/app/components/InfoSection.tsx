@@ -1,3 +1,4 @@
+import React from 'react'
 import {type PortableTextBlock} from 'next-sanity'
 
 import PortableText from '@/app/components/PortableText'
@@ -12,19 +13,29 @@ type InfoProps = {
 }
 
 export default function CTA({block}: InfoProps) {
+  const backgroundColor = block.backgroundColor
+
+  const backgroundStyle: React.CSSProperties = {}
+  if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
+  }
+
   return (
-    <div className="container my-12">
-      <div className="max-w-3xl">
-        {block?.heading && <h2 className="text-2xl md:text-3xl lg:text-4xl">{block.heading}</h2>}
-        {block?.subheading && (
-          <span className="block mt-4 mb-8 text-lg uppercase font-light text-gray-900/70">
-            {block.subheading}
-          </span>
-        )}
-        <div className="mt-4">
-          {block?.content?.length && (
-            <PortableText className="" value={block.content as PortableTextBlock[]} />
+    <div className="py-12" style={backgroundStyle}>
+      <div className="container">
+        <div className="max-w-3xl">
+          {block?.heading && <h2 className="text-2xl md:text-3xl lg:text-4xl">{block.heading}</h2>}
+          {block?.subheading && (
+            <span className="block mt-4 mb-8 text-lg uppercase font-light text-gray-900/70">
+              {block.subheading}
+            </span>
           )}
+          <div className="mt-4">
+            {block?.content?.length && (
+              <PortableText className="" value={block.content as PortableTextBlock[]} />
+            )}
+          </div>
         </div>
       </div>
     </div>

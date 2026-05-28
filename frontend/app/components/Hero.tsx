@@ -94,20 +94,23 @@ export default function Hero({block}: HeroProps) {
   // Determine background style
   const backgroundStyle: React.CSSProperties = {}
 
+  const hasBackground = !!(backgroundImage?.asset?.url || backgroundColor?.rgb)
+
   if (backgroundImage?.asset?.url) {
     backgroundStyle.backgroundImage = `url(${backgroundImage.asset.url})`
-  } else if (backgroundColor?.hex) {
-    backgroundStyle.backgroundColor = backgroundColor.hex
+  } else if (backgroundColor?.rgb) {
+    const {r = 0, g = 0, b = 0, a = 1} = backgroundColor.rgb
+    backgroundStyle.backgroundColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)}, ${a})`
   }
 
-  const backgroundClass = backgroundImage?.asset?.url || backgroundColor?.hex
+  const backgroundClass = hasBackground
     ? ''
     : 'bg-[url(/images/tile-1-black.png)] bg-size-[5px]'
 
   return (
     <div className="relative">
       <div className={`relative ${backgroundClass}`} style={backgroundStyle}>
-        <div className="bg-gradient-to-b from-white w-full h-full absolute top-0"></div>
+        {!hasBackground && <div className="bg-gradient-to-b from-white w-full h-full absolute top-0"></div>}
         <div className="container">
           <div className="relative min-h-[40vh] mx-auto max-w-2xl pt-10 xl:pt-20 pb-30 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center justify-center">
             <div className="flex flex-col gap-4 items-center text-center">

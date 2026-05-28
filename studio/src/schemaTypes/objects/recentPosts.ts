@@ -27,6 +27,12 @@ export const recentPosts = defineType({
       initialValue: 3,
       validation: (Rule) => Rule.required().min(1).max(12),
     }),
+    defineField({
+      name: 'backgroundColor',
+      title: 'Background Color',
+      type: 'color',
+      description: 'Optional section background color. Use the alpha slider to control fill percentage.',
+    }),
   ],
   preview: {
     select: {
