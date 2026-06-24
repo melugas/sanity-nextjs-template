@@ -12,6 +12,8 @@
  * ---------------------------------------------------------------------------------
  */
 
+export declare const internalGroqTypeReferenceTo: unique symbol
+
 // Source: ../sanity.schema.json
 export type SanityImageAssetReference = {
   _ref: string
@@ -71,12 +73,14 @@ export type Gallery = {
   }>
   layout: 'grid' | 'masonry' | 'carousel'
   columns?: 2 | 3 | 4
+  backgroundColor?: Color
 }
 
 export type RecentPosts = {
   _type: 'recentPosts'
   sectionTitle: string
   limit: number
+  backgroundColor?: Color
 }
 
 export type Hero = {
@@ -109,6 +113,7 @@ export type Hero = {
 export type Timeline = {
   _type: 'timeline'
   sectionTitle: string
+  backgroundColor?: Color
   entries?: Array<{
     image?: ObjectImage
     organization: string
@@ -135,6 +140,7 @@ export type CallToAction = {
   }
   theme?: 'light' | 'dark'
   contentAlignment?: 'textFirst' | 'imageFirst'
+  backgroundColor?: Color
 }
 
 export type InfoSection = {
@@ -142,6 +148,7 @@ export type InfoSection = {
   heading?: string
   subheading?: string
   content?: BlockContent
+  backgroundColor?: Color
 }
 
 export type BlockContentTextOnly = Array<{
@@ -314,6 +321,15 @@ export type Page = {
   >
 }
 
+export type Color = {
+  _type: 'color'
+  hex?: string
+  alpha?: number
+  hsl?: HslaColor
+  hsv?: HsvaColor
+  rgb?: RgbaColor
+}
+
 export type PersonReference = {
   _ref: string
   _type: 'reference'
@@ -365,15 +381,6 @@ export type Slug = {
   _type: 'slug'
   current: string
   source?: string
-}
-
-export type Color = {
-  _type: 'color'
-  hex?: string
-  alpha?: number
-  hsl?: HslaColor
-  hsv?: HsvaColor
-  rgb?: RgbaColor
 }
 
 export type SanityAssistInstructionTask = {
@@ -586,14 +593,14 @@ export type SanityFileAsset = {
   title?: string
   description?: string
   altText?: string
-  sha1hash?: string
-  extension?: string
-  mimeType?: string
-  size?: number
-  assetId?: string
+  sha1hash: string
+  extension: string
+  mimeType: string
+  size: number
+  assetId: string
   uploadId?: string
-  path?: string
-  url?: string
+  path: string
+  url: string
   source?: SanityAssetSourceData
 }
 
@@ -615,14 +622,14 @@ export type SanityImageAsset = {
   title?: string
   description?: string
   altText?: string
-  sha1hash?: string
-  extension?: string
-  mimeType?: string
-  size?: number
-  assetId?: string
+  sha1hash: string
+  extension: string
+  mimeType: string
+  size: number
+  assetId: string
   uploadId?: string
-  path?: string
-  url?: string
+  path: string
+  url: string
   metadata?: SanityImageMetadata
   source?: SanityAssetSourceData
 }
@@ -654,11 +661,11 @@ export type AllSanitySchemaTypes =
   | SanityImageCrop
   | SanityImageHotspot
   | Page
+  | Color
   | PersonReference
   | Post
   | Person
   | Slug
-  | Color
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -683,5 +690,3 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageAsset
   | Geopoint
-
-export declare const internalGroqTypeReferenceTo: unique symbol

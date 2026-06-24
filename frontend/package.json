@@ -16,7 +16,7 @@
     "@sanity/client": "^7.13.2",
     "@sanity/image-url": "^1.2.0",
     "@sanity/uuid": "^3.0.2",
-    "@tailwindcss/postcss": "^4.1.17",
+    "@tailwindcss/postcss": "4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@tgwf/co2": "^0.17.0",
     "@vercel/speed-insights": "^1.2.0",
@@ -30,7 +30,7 @@
     "sanity": "^5.1.0",
     "sanity-image": "^1.0.0",
     "sonner": "^2.0.7",
-    "tailwindcss": "^4.1.17"
+    "tailwindcss": "4.1.18"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^16.1.6",
